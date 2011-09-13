@@ -1,0 +1,7 @@
+This repository contains scripts that are useful for structure calculations using CARA, cyana, and peakInt.
+
+In particular, the following scripts are handy for rearranging the order of columns in peaklist to comply with the peakInt requirement that the order should be Hnoe Hdirect N/C:
+yxz_peaks.py
+zxy_peaks.py
+
+The script purgeIntegratedPeakfile.py adds assignment information to peaklists and removes peaks with negative volumes. 
