@@ -2,9 +2,27 @@
 
 from sys import argv, stdout
 
-#files = argv[1:]
+# Usage: combineModels.py > bundle.pdb
+# or comment out files = [], uncomment files = argv[1:], and
+# combineModels.py refine*.pdb > bundle.pdb
+
 # Copy list of best structures from refine_##_h2.pdb.stats
-# Then use ^x-r k to remove the other columns, use find-replace to add commas and quotes, and adjust tabs manually
+# Then use ^x-r k in emacs to remove the other columns, use find-replace to add commas and quotes, and adjust tabs manually
+
+# Afterwards, if you want to use the PDB procheck
+# ( http://deposit.rcsb.org/cgi-bin/validate/adit-session-driver )
+# you should use cyana to add a chain ID and translate HN->H, HB1->HB3, etc:
+
+#cyana> translate xplor
+#    Using XPLOR/CNS nomenclature.
+#cyana> read pdb xplormodels
+#cyana> translate off
+#    Using default nomenclature.
+#cyana> write pdb newcyanabundle
+#    PDB coordinate file "newcyanabundle.pdb" written.
+
+
+#files = argv[1:]
 files = ['refine_62_h2.pdb',
     'refine_61_h2.pdb',
     'refine_88_h2.pdb',
@@ -33,13 +51,11 @@ for file in files:
     for line in lines:
         if 'OT1' not in line and 'END' not in line:
             stdout.write(line)
-        elif 'OT1' in line:
+        elif 'OT1' in line: # Replace OT1 with O & make a TER line
             TERid = int(line.split()[1])+1
-            newline = line[0:14]+'  '+line[16:]+'TER    %d'%TERid+'  	 '+line[17:26]+'\n'
-            stdout.write(newline)
-    #stdout.write(open(file).read())
+            newlines = line[0:14]+'  '+line[16:]+'TER    %d'%TERid+'  	 '+line[17:26]+'\n'
+            stdout.write(newlines)
     print "ENDMDL"
     model += 1
     pass
 
-# Is it necessary to add TER fields and chain IDs?
