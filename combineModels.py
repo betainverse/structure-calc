@@ -29,7 +29,15 @@ files = ['refine_62_h2.pdb',
 model=1
 for file in files:
     print "MODEL %8d" % model
-    stdout.write(open(file).read())
+    lines = open(file).readlines()
+    for line in lines:
+        if 'OT1' not in line and 'END' not in line:
+            stdout.write(line)
+        elif 'OT1' in line:
+            TERid = int(line.split()[1])+1
+            newline = line[0:14]+'  '+line[16:]+'TER    %d'%TERid+'  	 '+line[17:26]+'\n'
+            stdout.write(newline)
+    #stdout.write(open(file).read())
     print "ENDMDL"
     model += 1
     pass
